@@ -72,7 +72,7 @@
                             geoIndex:0,
                             data: [{
                                 "name": "北京",
-                                "value": 599
+                                "value": 0
                             }, {
                                 "name": "上海",
                                 "value": 142
