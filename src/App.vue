@@ -1,14 +1,33 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">中国</router-link> |
-      <router-link to="/about">世界地图</router-link> |
-      <router-link to="/map">中国城市足迹</router-link>
-    </div>
+    
+    
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" router>
+      <el-menu-item>
+       <el-avatar> hqp </el-avatar>
+        </el-menu-item>
+      <el-menu-item index="/">中国地图</el-menu-item>
+      <el-menu-item index="/about">世界地图</el-menu-item>
+      <el-menu-item index="/map">中国城市足迹</el-menu-item>
+    
+    </el-menu> 
     <router-view/>
+     <!-- <el-menu-item index="1"><router-link to="/"  target="_blank">中国</router-link></el-menu-item>
+      <el-menu-item index="2"><router-link to="/about">世界地图</router-link></el-menu-item>
+      <el-menu-item index="3"><router-link to="/map">中国城市足迹</router-link></el-menu-item>
+     -->
   </div>
 </template>
+<script>
+export default {
+  data(){
+    return{
+      activeIndex:'/'
 
+    }
+  }
+}
+</script>
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

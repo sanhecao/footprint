@@ -1,8 +1,21 @@
 <template>
-  <el-container>
+  <el-container style="height: 500px; border: 1px solid #eee">
     <el-aside width="300px">
-      <label>{{province}}</label>
-      <div>
+      <el-row type="flex" style=" box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)" >
+        <el-col :span="3">
+        <el-button  size="mini" icon="el-icon-edit" circle :disabled="false"></el-button>
+        </el-col>
+        <el-col :span="21">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item style="padding:10px 0">{{province}}</el-breadcrumb-item>
+        </el-breadcrumb>
+        </el-col>
+
+      </el-row>
+      <el-row style=" box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
+        <el-input placeholder="请输入城市"  prefix-icon="el-icon-search"></el-input>
+      </el-row>
+      <div style="padding-top:10px">
         <el-checkbox-group v-model="checkCityList" @change="checkCityChange" size="mini">
           <el-checkbox-button
             v-for="item in cityList"
@@ -15,7 +28,7 @@
     </el-aside>
     <el-main>
       <e-china-and-city :geoCoordMapCheck="checkCityList" @clickProvince="getProvince"></e-china-and-city>
-      <div></div>
+      
     </el-main>
   </el-container>
 </template>
@@ -41,14 +54,19 @@ export default {
       this.province = val;
       this.geoCoordMap.map(item => {
         if (item.name === val) {
-          this.cityList = this.sortByKey(item.children,'name');
+          //this.sortByKey(Jitem.children,'name');
+          //如果这么赋值,如果citylist修改属性 geocoordmap也会联动修改 所以需要加JSon转换
+          this.cityList = this.sortByKey(
+            JSON.parse(JSON.stringify(item.children)),
+            "name"
+          );
         }
       });
-      this.cityList.forEach(item=>{
-          item.value=1
-      })
+      this.cityList.forEach(item => {
+        item.value = 1;
+      });
 
-      // console.log('省份加载城市列表',this.cityList);
+       console.log('省份加载城市列表',this.cityList,this.geoCoordMap);
     },
     checkCityChange() {
       console.log("checkCityChange", this.checkCityList);
@@ -71,11 +89,15 @@ export default {
 };
 </script>
 <style>
-.el-aside,
-.el-main {
+.el-aside {
   background-color: #fff;
   color: rgb(14, 121, 221);
   text-align: left;
   line-height: 30px;
+}
+.el-main {
+  background-color: #fff;
+  color: rgb(14, 121, 221);
+  padding: 0;
 }
 </style>
