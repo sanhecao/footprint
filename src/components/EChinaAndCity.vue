@@ -2408,27 +2408,29 @@ export default {
     };
   },
   created() {
-    // console.log("1121");
-    // this.$axios.get("geoCoordCity.json", {}).then(res => {
-    //   this.geoCoordMap = res.data[0];
-    //   console.log("zxios中", this.geoCoordMap);
+    console.log("1121");
+    var _this=this;
+    _this.curGeoJson=Object.assign({},this.curGeoJson,{北京:[1,1]});
+    //this.$axios.get("geoCoordCity.json", {}).then(res => {
+    //  _this.curGeoJson = res.data[0];
+      console.log("axios中", _this.curGeoJson);
 
-    //   // res.data.map(item => {
+      // res.data.map(item => {
 
-    //   //   this.$set(this.geoCoordMap, item.name, [item.log, item.lat]);
-    //   //   if (item.children !== null) {
-    //   //     item.children.map(childrenItem => {
-    //   //       this.$set(this.geoCoordMap, childrenItem.name, [
-    //   //         childrenItem.log,
-    //   //         childrenItem.lat
-    //   //       ]);
-    //   //     });
-    //   //   }
-    //   // });
-    // });
-    // this.geoCoordMap=Object.assign({},this.geoCoordMap,this.curGeoJson.Object);
-    //this.geoCoordMap=JSON.parse(JSON.stringify(this.geoCoordMap))
-    console.log("加载城市经纬度", this.geoCoordMap);
+      //   this.$set(this.geoCoordMap, item.name, [item.log, item.lat]);
+      //   if (item.children !== null) {
+      //     item.children.map(childrenItem => {
+      //       this.$set(this.geoCoordMap, childrenItem.name, [
+      //         childrenItem.log,
+      //         childrenItem.lat
+      //       ]);
+      //     });
+      //   }
+      // });
+   // });
+   // this.geoCoordMap=Object.assign({},this.geoCoordMap,this.curGeoJson.Object);
+   // this.geoCoordMap=JSON.parse(JSON.stringify(this.geoCoordMap))
+   // console.log("加载城市经纬度", this.geoCoordMap);
   },
 
   mounted() {
@@ -2887,14 +2889,15 @@ export default {
       var temp = [];
       console.log("initSeriesData this.geoCoordMap的值", this.geoCoordMap);
       // console.log(this.geoCoordMap)
-
+      console.log("curGeoJson", this.curGeoJson);
+      console.log("curGeoJson", this.curGeoJson["北京"].concat(1));
       for (var i = 0; i < data.length; i++) {
         var geoCoord = this.geoCoordMap[data[i].name];
-        console.log("data[i].name的值", data[i].name);
-        console.log(
-          "initSeriesData this.geoCoordMap[data[i].name]得值",
-          geoCoord
-        );
+        //console.log("data[i].name的值", data[i].name);
+       // console.log(
+       //   "initSeriesData this.geoCoordMap[data[i].name]得值",
+        //  geoCoord
+       // );
         if (geoCoord) {
           temp.push({
             name: data[i].name,
