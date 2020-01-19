@@ -4,9 +4,10 @@
       <el-menu-item>
        <el-avatar> hqp </el-avatar>
         </el-menu-item>
-      <el-menu-item index="/">中国地图</el-menu-item>
+      <el-menu-item index="/">中国城市足迹</el-menu-item>
+      <el-menu-item index="/home">中国地图</el-menu-item>
       <el-menu-item index="/about">世界地图</el-menu-item>
-      <el-menu-item index="/map">中国城市足迹</el-menu-item>
+
     </el-menu>
     <router-view/>
   </div>

@@ -9,26 +9,19 @@
 
 <script>
 import echarts from "echarts";
-import Vue from "vue";
-//  import '../../node_modules/echarts/map/js/china.js'
 import chinaJson from "../../node_modules/echarts/map/json/china.json";
-// import xinjiangJson from '../../node_modules/echarts/map/json/province/xinjiang.json'
-import { yellow } from "color-name";
-import { parse } from "querystring";
 export default {
   name: "EChinaAndCity",
   props: {
-    geoCoordMapCheck: Array
+    geoCoordMapCheck: Array,
+    ProvinceCheck:Object
   },
   watch: {
     geoCoordMapCheck: {
        handler() {
-       console.log("勾选了城市", this.geoCoordMapCheck);
+       //console.log("勾选了城市", this.geoCoordMapCheck);
        this.defaultOpt.data=this.geoCoordMapCheck;
        this.resetOption(this.myChart, this.mapOption, 'china');
-      //this.mapOption.series[0].data=this.initSeriesData(this.geoCoordMapCheck);
-      // this.myChart.setOption(this.mapOption);
-      //this.myChart.series[0].data=this.initSeriesData(this.lableData1);
        },
       deep:true//对象内部属性监听
     }
@@ -121,9 +114,6 @@ export default {
       ],
     };
   },
-  created() {
-  },
-
   mounted() {
     //加载各个城市的坐标系
     this.loading=true;
@@ -132,7 +122,6 @@ export default {
       this.chinaConfigure();
       this.loading=false;
     });
-   // this.loading=false;
   },
   methods: {
     chinaConfigure() {
@@ -141,7 +130,7 @@ export default {
       // })
       echarts.registerMap("china", chinaJson);
       this.myChart = echarts.init(this.$refs.myEchart);
-      console.log("chinaConfigure", this.myChart);
+    //  console.log("chinaConfigure", this.myChart);
       // echarts.registerMap('中国', '../../node_modules/echarts/map/json/china.json');
       //  console.log('chinaConfigure',this.myChart);
       var _this = this;
@@ -273,7 +262,8 @@ export default {
               show: true,//地图上的标签显示省份
               textStyle: {
                 color: "#fff"
-              }
+              },
+                fontSize:10
             },
             emphasis: {
               show: false,//地图上的标签显示省份
@@ -406,9 +396,9 @@ export default {
       };
       this.myChart.setOption(this.mapOption, true);
       this.myChart.on("click", function(params) {
-        console.log("click", params.name, _this.selectProvince);
-        var _self = this;
-        _this.$emit("clickProvince", params.name);
+       // console.log("click", params.name, _this.selectProvince);
+
+          _this.$emit("clickProvince", params.name);
         //下砖到省地图
         // if (_this.defaultOpt.goDown && params.name !== _this.mapName[_this.idx]) {
         //     if (_this.cityMap[params.name]) {
@@ -446,56 +436,57 @@ export default {
      * n 地图名
      **/
     resetOption: function(i, o, n) {
-      console.log("resetOption i o n", i, o, n);
-      var breadcrumb = this.createBreadcrumb(n);
-      var j = this.mapName.indexOf(n);
-      var l = o.graphic.length;
-      if (j < 0) {
-        o.graphic.push(breadcrumb);
-        o.graphic[0].children[0].shape.x2 = 145;
-        o.graphic[0].children[1].shape.x2 = 145;
-        if (o.graphic.length > 2) {
-          var cityData = [];
-          var cityJson;
-          for (var x = 0; x < this.defaultOpt.data.length; x++) {
-            if (n === this.defaultOpt.data[x].city) {
-              $([this.defaultOpt.data[x]]).each(function(index, data) {
-                cityJson = {
-                  city: data.city,
-                  name: data.name,
-                  value: data.value,
-                  crew: data.crew,
-                  company: data.company,
-                  position: data.position,
-                  region: data.region
-                };
-                console.log("resetOption-cityJson", cityJson);
-                cityData.push(cityJson);
-              });
-            }
-          }
-
-          if (cityData !== null) {
-            o.series[0].data = this.initSeriesData(cityData);
-          } else {
-            o.series[0].data = [];
-          }
-        }
-        this.mapName.push(n);
-        this.idx++;
-      } else {
-        o.graphic.splice(j + 2, l);
-        if (o.graphic.length <= 2) {
-          o.graphic[0].children[0].shape.x2 = 60;
-          o.graphic[0].children[1].shape.x2 = 60;
-          o.series[0].data = this.initSeriesData(this.defaultOpt.data);
-        }
-        this.mapName.splice(j + 1, l);
-        this.idx = j;
-        this.posDef.leftCur -= this.posDef.leftPlus * (l - j - 1);
-      }
-      //o.series[0].data = this.initSeriesData(this.defaultOpt.data);
-      o.geo.map = n;
+     // console.log("resetOption i o n=", i, o, n);
+      // var breadcrumb = this.createBreadcrumb(n);
+      // var j = this.mapName.indexOf(n);
+      // var l = o.graphic.length;
+      // if (j < 0) {
+      //   o.graphic.push(breadcrumb);
+      //   o.graphic[0].children[0].shape.x2 = 145;
+      //   o.graphic[0].children[1].shape.x2 = 145;
+      //   if (o.graphic.length > 2) {
+      //     var cityData = [];
+      //     var cityJson;
+      //     for (var x = 0; x < this.defaultOpt.data.length; x++) {
+      //       if (n === this.defaultOpt.data[x].city) {
+      //         $([this.defaultOpt.data[x]]).each(function(index, data) {
+      //           cityJson = {
+      //             city: data.city,
+      //             name: data.name,
+      //             value: data.value,
+      //             crew: data.crew,
+      //             company: data.company,
+      //             position: data.position,
+      //             region: data.region
+      //           };
+      //           console.log("resetOption-cityJson", cityJson);
+      //           cityData.push(cityJson);
+      //         });
+      //       }
+      //     }
+      //
+      //     if (cityData !== null) {
+      //       o.series[0].data = this.initSeriesData(cityData);
+      //     } else {
+      //       o.series[0].data = [];
+      //     }
+      //   }
+      //   this.mapName.push(n);
+      //   this.idx++;
+      // } else {
+      //   o.graphic.splice(j + 2, l);
+      //   if (o.graphic.length <= 2) {
+      //     o.graphic[0].children[0].shape.x2 = 60;
+      //     o.graphic[0].children[1].shape.x2 = 60;
+      //     o.series[0].data = this.initSeriesData(this.defaultOpt.data);
+      //   }
+      //   this.mapName.splice(j + 1, l);
+      //   this.idx = j;
+      //   this.posDef.leftCur -= this.posDef.leftPlus * (l - j - 1);
+      // }
+      o.series[0].data = this.initSeriesData(this.defaultOpt.data);
+      o.series[1].data = this.initSeriesProviceMapData(this.defaultOpt.data);
+        o.geo.map = n;
     //  o.geo.zoom = 0.4;
       i.clear();
       i.setOption(o);
@@ -622,6 +613,19 @@ export default {
       }
       return temp;
     },
+    initSeriesProviceMapData(data) {
+          var temp = [];
+          //console.log("initSeriesData-geoCoordMap",this.geoCoordMap);
+          for (var i = 0; i < data.length; i++) {
+              if (temp.indexOf(data[i].province) <= -1) {
+                  temp.push({
+                      name: data[i].province,
+                      value: 1
+                  });
+              }
+          }
+          return temp;
+      },
     zoomAnimation: function() {
       var count = null;
       var _this = this;

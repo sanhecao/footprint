@@ -13,7 +13,11 @@
 
       </el-row>
       <el-row style=" box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
-        <el-input placeholder="请输入城市"  prefix-icon="el-icon-search"></el-input>
+        <el-input placeholder="请输入城市" v-model="inputCity"
+                  prefix-icon="el-icon-search"
+                  clearable
+                  @change="searchCity(inputCity)"
+        ></el-input>
       </el-row>
       <div style="padding-top:10px">
         <el-checkbox-group v-model="checkCityList" size="mini">
@@ -22,13 +26,14 @@
             :key="item.name"
             :label="item"
             size="mini"
-            @change="((val)=>{checkCityChange(val, item.name)})"
+            :checked="item.checked"
+
           >{{item.name}}</el-checkbox-button>
         </el-checkbox-group>
       </div>
     </el-aside>
     <el-main  >
-      <e-china-and-city :geoCoordMapCheck="checkCityList" @clickProvince="getProvince"></e-china-and-city>
+      <e-china-and-city :geoCoordMapCheck="checkCityList" @clickProvince="getCityByProvince" ></e-china-and-city>
     </el-main>
   </el-container>
 </template>
@@ -49,15 +54,29 @@ export default {
       SelectProvinceList:{
         ProvinceName:'',
         cityList:[]
-      }
+      },
+      inputCity:''//搜索城市
     };
+  },
+  computed:{
+    //计算属性,切换省 如果城市已经勾选过了,需要在高亮显示
+    IsCheckCity() {
+      return function(CityName){
+        let index =this.checkCityList.findIndex(item => item.name === CityName);
+      if(index > -1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    }
   },
   components: {
     EChinaAndCity
   },
   methods: {
     //根据子组件传递过来的省份,加载改省份的城市
-    getProvince(val) {
+    getCityByProvince(val) {
       this.loadingAside = true;
       this.province = val;
       this.geoCoordMap.map(item => {
@@ -74,15 +93,60 @@ export default {
       this.cityList.forEach(item => {
         item.value = 1;
         item.province=val;
+        if(this.checkCityList){
+        let index =this.checkCityList.findIndex(citem => citem.name === item.name);
+        if (index > -1) {
+          item.checked =true;
+        } else{
+          item.checked =false;
+        }};
+        if(this.inputCity && item.name === this.inputCity){
+          item.checked = true;
+        }
       });
       this.loadingAside = false;
     //  console.log('省份加载城市列表',this.cityList,this.geoCoordMap);
     },
-    checkCityChange(value,cityname) {
-      console.log("checkCityChange",this.checkCityList,cityname);
+    //点击选择城市 传给子组件点了哪个省份
+  //  checkCityChange(value,cityname) {
+     // console.log("checkCityChange",this.checkCityList,cityname);
       // this.SelectProvinceList.map(item=>{
       //
       // });
+    //},
+    searchCity(City){
+     // console.log("查询的城市",inputCity);
+      //得到改城市的所在省份
+      if(City) {
+        var searcheProvince = this.getProviceByCity(City);//根据城市查到省份
+        this.getCityByProvince(searcheProvince.province);
+        this.inputCity = '';
+      }
+    },
+    getProviceByCity(cityName){
+      var proviceName={};
+      this.geoCoordMap.map(item => {
+        if (item.name === cityName) {
+          proviceName.province= item.name;
+          proviceName.checked= true;
+          proviceName.lat= item.lat;
+          proviceName.log=item.log;
+          proviceName.name=cityName;
+          proviceName.value= 1
+        } else {
+          item.children.map(itemChild => {
+            if (itemChild.name === cityName) {
+              proviceName.province= item.name;
+              proviceName.checked= true;
+              proviceName.lat= itemChild.lat;
+              proviceName.log=itemChild.log;
+              proviceName.name=cityName;
+              proviceName.value= 1
+            }
+          })
+        }
+      });
+      return proviceName;
     },
     //数组对象方法排序:
     sortByKey(array, key) {
