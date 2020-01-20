@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height: 500px; border: 1px solid #eee">
+  <el-container style="height: 500px; border: 1px solid #eee" v-loading.fullscreen.lock="fullscreenLoading">
     <el-aside v-loading="loadingAside"  width="300px">
       <el-row type="flex" style=" box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)" >
         <el-col :span="3">
@@ -55,8 +55,12 @@ export default {
         ProvinceName:'',
         cityList:[]
       },
-      inputCity:''//搜索城市
+      inputCity:'',//搜索城市
+      fullscreenLoading:false
     };
+  },
+  created(){
+     this.fullscreenLoading=true;
   },
   computed:{
     //计算属性,切换省 如果城市已经勾选过了,需要在高亮显示
@@ -160,6 +164,7 @@ export default {
   mounted() {
     this.$axios.get("geoCoordMap.json", {}).then(res => {
       this.geoCoordMap = res.data;
+      this.fullscreenLoading=false;
       // console.log('加载城市经纬度',this.geoCoordMap)
     });
   }
