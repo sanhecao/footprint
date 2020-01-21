@@ -21,6 +21,7 @@ export default {
        handler() {
        //console.log("勾选了城市", this.geoCoordMapCheck);
        this.defaultOpt.data=this.geoCoordMapCheck;
+       this.mapOption.graphic[1].children[3].style.text= "一共去了" + this.geoCoordMapCheck.length + "个城市";
        this.resetOption(this.myChart, this.mapOption, 'china');
        },
       deep:true//对象内部属性监听
@@ -144,10 +145,12 @@ export default {
           hideDelay: 100,
           triggerOn: "mousemove",
           enterable: true,
-          position: ["10%", "70%"]
+        //  position: ["10%", "70%"],
           //hqp formatter:function(params, ticket, callback){
           //     return '简称：'+params.data.name+'<br/>'+'机组：'+params.data.crew+'万千瓦'+'<br/>'+'公司名称：'+params.data.company+'<br/>'+'所属大区：'+params.data.region+'<br/>'+'所在位置：'+params.data.position
           // }
+
+
         },
         //图例 控制每个省显示的颜色.显示一个颜色,有值就会显示
         visualMap: {
@@ -248,7 +251,19 @@ export default {
                 onclick: function() {
                   _this.resetOption(_this.myChart, _this.mapOption, "中国");
                 }
-              }
+              },
+                {
+                    type: "text",
+                    left: 100,
+                    top: 0,
+                    style: {
+                        text: "一共去了" + _this.geoCoordMapCheck.length + "个城市",
+                        textAlign: "center",
+                        fill: _this.styleDef.textColor,
+                        font: '12px "Microsoft YaHei", sans-serif'
+                    },
+
+                }
             ]
           }
         ],
@@ -386,9 +401,19 @@ export default {
             mapType: "china",
             geoIndex: 0,
             tooltip:{
-              formatter: function(params) {
-                return params.name
-              }
+                formatter: function(params) {
+                    if (_this.geoCoordMapCheck.length > 0) {
+                        var toolTiphtml = '';
+                        for (var i = 0; i < _this.geoCoordMapCheck.length; i++) {
+                            if (params.name === _this.geoCoordMapCheck[i].province) {
+                                if (toolTiphtml === ''){toolTiphtml = '去过的城市:'+'<br>'}
+                                toolTiphtml += _this.geoCoordMapCheck[i].name + '<br>'
+                            }
+                        }
+                       // console.log(toolTiphtml);
+                        return toolTiphtml;
+                    }
+                }
             },
             data: this.lableData
           }
