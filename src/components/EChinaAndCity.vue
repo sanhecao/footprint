@@ -260,7 +260,7 @@ export default {
                         text: "一共去了" + _this.geoCoordMapCheck.length + "个城市",
                         textAlign: "center",
                         fill: _this.styleDef.textColor,
-                        font: '12px "Microsoft YaHei", sans-serif'
+                        font: '14px "Microsoft YaHei", sans-serif'
                     },
 
                 }

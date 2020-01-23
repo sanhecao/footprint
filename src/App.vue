@@ -2,8 +2,8 @@
   <div id="app" >
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" router>
       <el-menu-item>
-       <el-avatar> hqp </el-avatar>
-        </el-menu-item>
+       <el-avatar src="./title.jpg"> hqp </el-avatar>
+      </el-menu-item>
       <el-menu-item index="/">中国城市足迹</el-menu-item>
       <el-menu-item index="/home">中国地图</el-menu-item>
       <el-menu-item index="/mapworld">世界地图</el-menu-item>

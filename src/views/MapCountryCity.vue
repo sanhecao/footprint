@@ -20,14 +20,13 @@
         ></el-input>
       </el-row>
       <div style="padding-top:10px">
-        <el-checkbox-group v-model="checkCityList" size="mini">
+        <el-checkbox-group v-model="checkCityList" size="mini"  @change="handleCheckedCitiesChange">
           <el-checkbox-button
             v-for="item in cityList"
             :key="item.name"
             :label="item"
             size="mini"
             :checked="item.checked"
-
           >{{item.name}}</el-checkbox-button>
         </el-checkbox-group>
       </div>
@@ -82,48 +81,65 @@ export default {
     //根据子组件传递过来的省份,加载改省份的城市
     getCityByProvince(val) {
       this.loadingAside = true;
-      this.province = val;
-      this.geoCoordMap.map(item => {
-        if (item.name === val) {
-          //this.sortByKey(Jitem.children,'name');
-          //如果这么赋值,如果citylist修改属性 geocoordmap也会联动修改 所以需要加JSon转换
-          this.cityList = this.sortByKey(
-            JSON.parse(JSON.stringify(item.children)),
-            "name"
-          );
-
-        }
-      });
+      if(this.province !== val) {
+        this.province = val;
+        this.geoCoordMap.map(item => {
+          if (item.name === val) {
+            //this.sortByKey(Jitem.children,'name');
+            //如果这么赋值,如果citylist修改属性 geocoordmap也会联动修改 所以需要加JSon转换
+            this.cityList = this.sortByKey(
+                    JSON.parse(JSON.stringify(item.children)),
+                    "name"
+            );
+          }
+        });
+      };
+      var tempItem={};
       this.cityList.forEach(item => {
-        item.value = 1;
-        item.province=val;
-        if(this.checkCityList){
-        let index =this.checkCityList.findIndex(citem => citem.name === item.name);
-        if (index > -1) {
-          item.checked =true;
-        } else{
-          item.checked =false;
-        }};
-        if(this.inputCity && item.name === this.inputCity){
-          item.checked = true;
+        this.$set(item, 'checked', false);
+        this.$set(item, 'value', 1);
+        this.$set(item, 'province', val);
+        if(this.inputCity && item.name === this.inputCity) {
+         // item.checked = true;
+         // console.log('checkCityList',this.checkCityList);
+           tempItem = item;
+          if (this.checkCityList.findIndex(citem => citem.name === tempItem.name) <= -1) {
+            console.log('插入', this.checkCityList, this.inputCity, this.checkCityList.findIndex(citem => citem.name === this.inputCity));
+            this.checkCityList.push({
+              name: tempItem.name,
+              lat: tempItem.lat,
+              log: tempItem.log,
+              value: 1,
+              province: tempItem.province,
+              checked: true
+            });
+          }
         }
+        // if(this.checkCityList){
+        //
+        // let index =this.checkCityList.findIndex(citem => citem.name === item.name);
+        // if (index > -1) {
+        //   console.log('aaaa',item.name,this.checkCityList );
+        //   item.checked =true;
+        // } else{
+        //   item.checked =false;
+        // }};
       });
+    //  console.log('checkCityList',this.checkCityList);
       this.loadingAside = false;
     //  console.log('省份加载城市列表',this.cityList,this.geoCoordMap);
     },
-    //点击选择城市 传给子组件点了哪个省份
-  //  checkCityChange(value,cityname) {
-     // console.log("checkCityChange",this.checkCityList,cityname);
-      // this.SelectProvinceList.map(item=>{
-      //
-      // });
-    //},
+    handleCheckedCitiesChange(value) {
+      console.log('gaib ' ,this.cityList,this.checkCityList)
+    },
     searchCity(City){
-     // console.log("查询的城市",inputCity);
       //得到改城市的所在省份
       if(City) {
         var searcheProvince = this.getProviceByCity(City);//根据城市查到省份
         this.getCityByProvince(searcheProvince.province);
+        //let index = this.cityList.findIndex(citem => citem.name === City);
+        //this.cityList[index].checked = true;
+        //console.log("searchCity111",this.checkCityList,this.cityList);
         this.inputCity = '';
       }
     },

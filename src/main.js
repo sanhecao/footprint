@@ -12,7 +12,6 @@ Vue.prototype.$axios=axios;
 Vue.config.productionTip = false;
 
 new Vue({
-  mode: 'history',
   router,
   store,
   render: h => h(App)
