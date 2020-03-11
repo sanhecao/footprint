@@ -10,6 +10,9 @@
       <el-menu-item index="/about">关于</el-menu-item>
     </el-menu>
     <router-view/>
+    <div> 
+      <a href="http://www.beian.miit.gov.cn" class="beian">闽ICP备18027538号</a>
+    </div>
   </div>
 </template>
 <script>
@@ -42,5 +45,9 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+.beian{
+  font-size: 10px;  
+  color: #6e7773;
 }
 </style>
