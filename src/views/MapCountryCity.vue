@@ -178,7 +178,7 @@ export default {
     }
   },
   mounted() {
-    this.$axios.get("geoCoordMap.json", {}).then(res => {
+    this.$axios.get("./geoCoordMap.json", {}).then(res => {
       this.geoCoordMap = res.data;
       this.fullscreenLoading=false;
       // console.log('加载城市经纬度',this.geoCoordMap)

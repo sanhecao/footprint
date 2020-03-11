@@ -118,7 +118,7 @@ export default {
   mounted() {
     //加载各个城市的坐标系
     this.loading=true;
-    this.$axios.get("geoCoordCity.json", {}).then(res => {
+    this.$axios.get("./geoCoordCity.json", {}).then(res => {
       this.geoCoordMap =res.data[0];
       this.chinaConfigure();
       this.loading=false;
