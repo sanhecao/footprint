@@ -3,5 +3,5 @@ module.exports = {
 
     // 没有书写baseUrl属性   默认'/'  对应dev.assetsPublicPath.
     // 从 Vue CLI 3.3 起baseUrl已弃用，请使用publicPath.
-    publicPath: process.env.NODE_ENV === 'production' ? '/footprint' : '/'
+    publicPath: process.env.NODE_ENV === 'production' ? '/footprint/' : '/'
 }
