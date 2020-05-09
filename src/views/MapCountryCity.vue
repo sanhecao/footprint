@@ -20,15 +20,16 @@
         ></el-input>
       </el-row>
       <div style="padding-top:10px">
-        <el-checkbox-group v-model="checkCityList" size="mini"  @change="handleCheckedCitiesChange">
+<!--        <el-checkbox-group v-model="checkCityList" size="mini"  @change="handleCheckedCitiesChange">-->
           <el-checkbox-button
             v-for="item in cityList"
             :key="item.name"
             :label="item"
             size="mini"
-            :checked="item.checked"
+            :checked="indexOf(item,checkCityList)"
+            @change="handleCheckedCitiesChange(item,indexOf(item,checkCityList))"
           >{{item.name}}</el-checkbox-button>
-        </el-checkbox-group>
+<!--        </el-checkbox-group>-->
       </div>
     </el-aside>
     <el-main  >
@@ -83,54 +84,71 @@ export default {
       this.loadingAside = true;
       if(this.province !== val) {
         this.province = val;
+        let that=this;
         this.geoCoordMap.map(item => {
           if (item.name === val) {
-            //this.sortByKey(Jitem.children,'name');
             //如果这么赋值,如果citylist修改属性 geocoordmap也会联动修改 所以需要加JSon转换
-            this.cityList = this.sortByKey(
+            that.cityList = that.sortByKey(
                     JSON.parse(JSON.stringify(item.children)),
                     "name"
             );
+           // console.log('获取排序后的城市',that.cityList);
           }
         });
       };
       var tempItem={};
+      let that=this;
+     // console.log('citylist',this.cityList)
+
       this.cityList.forEach(item => {
-        this.$set(item, 'checked', false);
-        this.$set(item, 'value', 1);
-        this.$set(item, 'province', val);
-        if(this.inputCity && item.name === this.inputCity) {
-         // item.checked = true;
-         // console.log('checkCityList',this.checkCityList);
-           tempItem = item;
-          if (this.checkCityList.findIndex(citem => citem.name === tempItem.name) <= -1) {
-            console.log('插入', this.checkCityList, this.inputCity, this.checkCityList.findIndex(citem => citem.name === this.inputCity));
-            this.checkCityList.push({
-              name: tempItem.name,
-              lat: tempItem.lat,
-              log: tempItem.log,
-              value: 1,
-              province: tempItem.province,
-              checked: true
-            });
-          }
-        }
-        // if(this.checkCityList){
-        //
-        // let index =this.checkCityList.findIndex(citem => citem.name === item.name);
-        // if (index > -1) {
-        //   console.log('aaaa',item.name,this.checkCityList );
-        //   item.checked =true;
-        // } else{
-        //   item.checked =false;
-        // }};
+        that.$set(item, 'checked', that.indexOf(item,that.checkCityList));
+        that.$set(item, 'value', 1);
+        that.$set(item, 'province', val);
+         if(that.inputCity && item.name === that.inputCity) {
+        //  // item.checked = true;
+        //  // console.log('checkCityList',this.checkCityList);
+            tempItem = item;}
+        //   if (that.checkCityList.findIndex(citem => citem.name === tempItem.name) <= -1) {
+        //   //  console.log('插入', this.checkCityList, this.inputCity, this.checkCityList.findIndex(citem => citem.name === this.inputCity));
+        //     that.checkCityList.push({
+        //       name: tempItem.name,
+        //       lat: tempItem.lat,
+        //       log: tempItem.log,
+        //       value: 1,
+        //       province: tempItem.province,
+        //       checked: false
+        //     });
+        //   }
+        // }
       });
-    //  console.log('checkCityList',this.checkCityList);
+      if(!this.indexOf(tempItem,this.checkCityList)){
+      this.handleCheckedCitiesChange(tempItem,this.indexOf(tempItem,this.checkCityList));
+      }
       this.loadingAside = false;
-    //  console.log('省份加载城市列表',this.cityList,this.geoCoordMap);
+     // console.log('省份加载城市列表',this.cityList,this.checkCityList);
     },
-    handleCheckedCitiesChange(value) {
-      console.log('gaib ' ,this.cityList,this.checkCityList)
+    indexOf(item, items) {
+     // console.log('indexOf',items.indexOf(item))
+      items = JSON.stringify(items)
+      item = JSON.stringify(item)
+      if(items.indexOf(item) > -1 ){
+        return true
+      }else{
+        return false
+      }
+    },
+    handleCheckedCitiesChange(e,ischeck) {
+      console.log('handleCheckedCitiesChange',e,ischeck)
+      if(ischeck){
+        this.checkCityList.forEach((item, index, array) => {
+          if (e.name == item.name) {
+            this.checkCityList.splice(index, 1)
+          }
+        })
+      }else{
+        this.checkCityList.push(e)
+      }
+      console.log('勾选城市 ' ,e,this.cityList,this.checkCityList)
     },
     searchCity(City){
       //得到改城市的所在省份
@@ -140,6 +158,7 @@ export default {
         //let index = this.cityList.findIndex(citem => citem.name === City);
         //this.cityList[index].checked = true;
         //console.log("searchCity111",this.checkCityList,this.cityList);
+
         this.inputCity = '';
       }
     },
@@ -171,9 +190,9 @@ export default {
     //数组对象方法排序:
     sortByKey(array, key) {
       return array.sort(function(a, b) {
-        var x = a[key];
-        var y = b[key];
-        return x < y ? -1 : x > y ? 1 : 0;
+         var x = a[key];
+         var y = b[key];
+        return x.localeCompare(y,"zh");//按中文排序
       });
     }
   },
@@ -183,6 +202,10 @@ export default {
       this.fullscreenLoading=false;
       // console.log('加载城市经纬度',this.geoCoordMap)
     });
+   // this.$axios.post("http://printtag.focusmedia.tech/printtag/isValidUser?UserId=E0025344&Password=l123456789", {}).then(res => {
+    //  console.log(res);
+      // console.log('加载城市经纬度',this.geoCoordMap)
+   // });
   }
 };
 </script>
