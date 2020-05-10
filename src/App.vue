@@ -5,7 +5,7 @@
        <el-avatar src="./title.jpg"> hqp </el-avatar>
       </el-menu-item>
       <el-menu-item index="/">中国城市足迹</el-menu-item>
-      <el-menu-item index="/home">中国地图</el-menu-item>
+      <!-- <el-menu-item index="/home">中国地图</el-menu-item> -->
       <el-menu-item index="/mapworld">世界地图</el-menu-item>
       <el-menu-item index="/about">关于</el-menu-item>
     </el-menu>
@@ -22,6 +22,16 @@ export default {
       activeIndex:'/'
 
     }
+
+  },
+  mounted(){
+    let list1 ={
+      1:{1:0,2:0,3:0},
+      2:{1:0,2:0,3:0},
+      3:{1:0,2:0,3:0}
+    }
+    let res = Object.values(list1[1])
+    console.log('对象转数组',res)
   }
 }
 </script>

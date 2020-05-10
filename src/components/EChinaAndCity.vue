@@ -1,9 +1,20 @@
 <template>
-  <div class="echarts">
-<!--   <el-main v-loading="loading">-->
-    <!-- <div v-for="item in geoCoordMapCheck" :key="item.name">{{item.name}}</div> -->
-    <div :style="{height:'550px',width:'100%'}" ref="myEchart"></div>
-<!--  </el-main>-->
+  <div class="echarts" style="height:100%">
+    <div>
+      <!-- 顶部选项 -->
+      <el-row style="padding:5px">
+         <el-col :span="4">
+        <el-switch
+          v-model="showTitle"
+          active-text=""
+          :width="35"
+          :inactive-text="title">
+        </el-switch>
+         </el-col>
+      </el-row>
+    </div>
+    <!-- 主要地图显示 -->
+    <div :style="{height:'100%',width:'100%'}" ref="myEchart"></div>
   </div>
 </template>
 
@@ -21,10 +32,24 @@ export default {
        handler() {
        //console.log("勾选了城市", this.geoCoordMapCheck);
        this.defaultOpt.data=this.geoCoordMapCheck;
-       this.mapOption.graphic[1].children[3].style.text= "一共去了" + this.geoCoordMapCheck.length + "个城市";
+       this.mapOption.graphic[1].children[3].style.text= this.showTitle?
+       "一共去了" + this.geoCoordMapCheck.length + "个城市":"";
        this.resetOption(this.myChart, this.mapOption, 'china');
        },
       deep:true//对象内部属性监听
+    },
+    showTitle:{
+      handler() {
+      if (this.showTitle) {
+        this.title ='隐藏标题'
+      }else{
+        this.title='显示标题'
+      }
+      this.defaultOpt.data=this.geoCoordMapCheck;
+      this.mapOption.graphic[1].children[3].style.text=this.showTitle?
+       "一共去了" + this.geoCoordMapCheck.length + "个城市":"";
+      this.resetOption(this.myChart, this.mapOption, 'china');
+      }
     }
   },
   data() {
@@ -70,11 +95,8 @@ export default {
         香港: "map/data-xianggang.json",
         澳门: "map/data-aomen.json"
       },
-      // levelColorMap : {
-      //     '1': 'rgba(241, 109, 115, .8)',
-      //     '2': 'rgba(255, 235, 59, .7)',
-      //     '3': 'rgba(147, 235, 248, 1)'
-      // },
+      showTitle:true,
+      title :'隐藏标题',
       styleDef: {
         font: '18px "Microsoft YaHei", sans-serif',
         textColor: "#eee",
@@ -256,8 +278,9 @@ export default {
                     type: "text",
                     left: 100,
                     top: 0,
+                    show:false,
                     style: {
-                        text: "一共去了" + _this.geoCoordMapCheck.length + "个城市",
+                        text: "一共去了" + _this.geoCoordMapCheck.length + "个城市" ,
                         textAlign: "center",
                         fill: _this.styleDef.textColor,
                         font: '14px "Microsoft YaHei", sans-serif'
@@ -453,7 +476,10 @@ export default {
           });
         }
       };
-      window.onresiza = this.myChart.resize;
+      window.onresize = function(){
+           _this.myChart.resize(); //若有多个图表变动，可多写
+       }
+
     },
     /**
      * i 实例对象
@@ -677,4 +703,12 @@ export default {
 </script>
 
 <style scoped>
+.el-switch{
+  font-size: 10px;
+   height: 10px;
+}
+.el-switch__label{
+    font-size: 10px;
+   height: 10px;
+}
 </style>

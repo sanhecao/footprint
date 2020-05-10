@@ -10,7 +10,6 @@
           <el-breadcrumb-item style="padding:10px 0">{{province}}</el-breadcrumb-item>
         </el-breadcrumb>
         </el-col>
-
       </el-row>
       <el-row style=" box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
         <el-input placeholder="请输入城市" v-model="inputCity"
@@ -20,16 +19,16 @@
         ></el-input>
       </el-row>
       <div style="padding-top:10px">
-<!--        <el-checkbox-group v-model="checkCityList" size="mini"  @change="handleCheckedCitiesChange">-->
-          <el-checkbox-button
+       <!-- <el-checkbox-group v-model="checkCityList" size="mini"  @change="handleCheckedCitiesChange"> -->
+         <!-- <el-checkbox-group size="mini"  > -->
+          <el-checkbox-button class="checkbox"
             v-for="item in cityList"
             :key="item.name"
-            :label="item"
-            size="mini"
+            :label="item"          
             :checked="indexOf(item,checkCityList)"
             @change="handleCheckedCitiesChange(item,indexOf(item,checkCityList))"
           >{{item.name}}</el-checkbox-button>
-<!--        </el-checkbox-group>-->
+       <!-- </el-checkbox-group> -->
       </div>
     </el-aside>
     <el-main  >
@@ -138,7 +137,7 @@ export default {
       }
     },
     handleCheckedCitiesChange(e,ischeck) {
-      console.log('handleCheckedCitiesChange',e,ischeck)
+    //  console.log('handleCheckedCitiesChange',e,ischeck)
       if(ischeck){
         this.checkCityList.forEach((item, index, array) => {
           if (e.name == item.name) {
@@ -148,17 +147,18 @@ export default {
       }else{
         this.checkCityList.push(e)
       }
-      console.log('勾选城市 ' ,e,this.cityList,this.checkCityList)
+      //console.log('勾选城市 ' ,e,this.cityList,this.checkCityList)
     },
     searchCity(City){
       //得到改城市的所在省份
       if(City) {
         var searcheProvince = this.getProviceByCity(City);//根据城市查到省份
-        this.getCityByProvince(searcheProvince.province);
-        //let index = this.cityList.findIndex(citem => citem.name === City);
-        //this.cityList[index].checked = true;
-        //console.log("searchCity111",this.checkCityList,this.cityList);
-
+        if(searcheProvince.province!== undefined ){
+          this.getCityByProvince(searcheProvince.province);
+          //console.log("searchCity111",this.checkCityList,this.cityList);
+        }else{
+           this.$message('查询不到这个城市');
+        }
         this.inputCity = '';
       }
     },
@@ -220,5 +220,9 @@ export default {
   background-color: #fff;
   color: rgb(14, 121, 221);
   padding: 0;
+}
+.el-checkbox-button__inner{
+  font-size: 12px;
+  padding: 7px 10px;
 }
 </style>
